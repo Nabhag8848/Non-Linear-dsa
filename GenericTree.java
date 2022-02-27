@@ -63,6 +63,29 @@ public class GenericTree {
         return max;
     }
 
+    public void traversals(TreeNode node){
+        System.out.println("Node Pre: " + node.value);
+
+        for(TreeNode child: node.children){
+            System.out.println("Edge Pre: " + node.value + ".." + child.value);
+            traversals(child);
+            System.out.println("Edge Post: " + node.value + ".." + child.value);
+        }
+
+        System.out.println("Node Post: " + node.value);
+    }
+
+    public int height(TreeNode node){
+        int depth = -1;
+
+        for(TreeNode Node: node.children){
+            depth = Math.max(depth,height(Node));
+        }
+        depth++;
+
+        return depth;
+    }
+
      private class TreeNode {
         private final int value;
         private final ArrayList<TreeNode> children = new ArrayList<>();
@@ -78,5 +101,8 @@ public class GenericTree {
         tree.display(tree.root);
         System.out.println(tree.size(tree.root));
         System.out.println(tree.maxValueNode(tree.root));
+
+        System.out.println(tree.height(tree.root));
+        tree.traversals(tree.root);
     }
 }
