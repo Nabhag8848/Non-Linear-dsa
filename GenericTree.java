@@ -86,7 +86,74 @@ public class GenericTree {
         return depth;
     }
 
-     private class TreeNode {
+    public void levelOrder(TreeNode rootNode){
+        Queue<TreeNode> queue  = new ArrayDeque<>();
+        queue.add(rootNode);
+        
+        while(queue.size() > 0) {
+            TreeNode Node = queue.remove();
+            System.out.print(Node.value + " ");
+
+            queue.addAll(Node.children);
+        }
+        System.out.print(".");
+    }
+
+    public void levelOrderLinewise(TreeNode rootNode){
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        Queue<TreeNode> childQueue = new ArrayDeque<>();
+        queue.add(rootNode);
+        while(queue.size() > 0){
+            TreeNode Node = queue.remove();
+            System.out.print(Node.value + " ");
+            childQueue.addAll(Node.children);
+
+            if(queue.size() == 0){
+                Queue<TreeNode> temp = queue;
+                queue = childQueue;
+                childQueue = temp;
+                System.out.println();
+            }
+        }
+    }
+
+    public void levelOrderLinewiseZigzag(TreeNode rootNode){
+        Boolean right = true;
+
+        Stack<TreeNode> stack = new Stack<>();
+        Stack<TreeNode> childStack = new Stack<>();
+
+        stack.push(rootNode);
+
+        while(stack.size() > 0){
+
+            TreeNode Node = stack.pop();
+            System.out.print(Node.value + " ");
+
+            if(right){
+                for(int i = 0;i < Node.children.size();++i){
+                    childStack.push(Node.children.get(i));
+                }
+            }else{
+                for(int i = Node.children.size() - 1;i >= 0;--i){
+                    childStack.push(Node.children.get(i));
+                }
+            }
+
+            if(stack.size() == 0){
+
+                Stack<TreeNode> temp = stack;
+                stack = childStack;
+                childStack = temp;
+
+                right = !right;
+                System.out.println();
+            }
+        }
+    }
+
+
+     private static class TreeNode {
         private final int value;
         private final ArrayList<TreeNode> children = new ArrayList<>();
 
@@ -96,7 +163,7 @@ public class GenericTree {
     }
 
     public static void main(String[] args) {
-        int[] arr = {10, 20, -1, 30, 50, -1, 60, -1, -1, 40, -1, -1};
+        int[] arr = {10, 20, 50, -1, 60, -1, -1, 30, 70, -1, 80, 110, -1, 120, -1, -1, 90, -1, -1, 40, 100, -1, -1, -1};
         GenericTree tree = new GenericTree(arr);
         tree.display(tree.root);
         System.out.println(tree.size(tree.root));
@@ -104,5 +171,9 @@ public class GenericTree {
 
         System.out.println(tree.height(tree.root));
         tree.traversals(tree.root);
+        tree.levelOrder(tree.root);
+        tree.levelOrderLinewise(tree.root);
+        tree.levelOrderLinewiseZigzag(tree.root);
+
     }
 }
