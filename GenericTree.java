@@ -152,6 +152,47 @@ public class GenericTree {
         }
     }
 
+    public void mirror(TreeNode node){
+
+        Collections.reverse(node.children);
+
+        for(TreeNode child: node.children){
+            mirror(child);
+        }
+    }
+
+    public void mirrorUsingSwap(TreeNode node){
+
+        int size = node.children.size() - 1;
+
+        for(int i = 0;i < size;++i){
+            swapNodes(node, i, size - i);
+        }
+
+        for(TreeNode child: node.children){
+            mirrorUsingSwap(child);
+        }
+    }
+
+    public void swapNodes(TreeNode node, int i, int j){
+        TreeNode temp = node.children.get(i);
+        node.children.set(i, node.children.get(j));
+        node.children.set(j, temp);
+    }
+
+    public void removeLeaves(TreeNode node){
+
+        for(int i = node.children.size() - 1; i >= 0; --i){
+            TreeNode Node = node.children.get(i);
+            if(Node.children.size() == 0){
+                node.children.remove(Node);
+            }
+        }
+
+        for(TreeNode child: node.children){
+            removeLeaves(child);
+        }
+    }
 
      private static class TreeNode {
         private final int value;
@@ -164,16 +205,21 @@ public class GenericTree {
 
     public static void main(String[] args) {
         int[] arr = {10, 20, 50, -1, 60, -1, -1, 30, 70, -1, 80, 110, -1, 120, -1, -1, 90, -1, -1, 40, 100, -1, -1, -1};
+
         GenericTree tree = new GenericTree(arr);
         tree.display(tree.root);
+       
         System.out.println(tree.size(tree.root));
         System.out.println(tree.maxValueNode(tree.root));
-
         System.out.println(tree.height(tree.root));
+        
         tree.traversals(tree.root);
         tree.levelOrder(tree.root);
         tree.levelOrderLinewise(tree.root);
         tree.levelOrderLinewiseZigzag(tree.root);
 
+        tree.mirror(tree.root);
+        tree.mirrorUsingSwap(tree.root);
+        tree.removeLeaves(tree.root);
     }
 }
