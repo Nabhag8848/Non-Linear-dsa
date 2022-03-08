@@ -194,6 +194,113 @@ public class GenericTree {
         }
     }
 
+    public void linearize(TreeNode rootNode){
+
+        for(TreeNode child: rootNode.children){
+            linearize(child);
+        }
+        while(rootNode.children.size() > 1) {
+            TreeNode lastChild = rootNode.children.remove(rootNode.children.size() - 1);
+            TreeNode secondLastChild = rootNode.children.get(rootNode.children.size() - 1);
+            TreeNode tail = getTail(secondLastChild);
+            tail.children.add(lastChild);
+        }
+    }
+
+    private TreeNode getTail(TreeNode node){
+
+        while(node.children.size() == 1){
+            node = node.children.get(0);
+        }
+
+        return node;
+    }
+
+    public TreeNode linearize2(TreeNode rootNode){
+
+        if(rootNode.children.size() == 0){
+            return rootNode;
+        }
+
+        TreeNode lastChildLeaf= linearize2(rootNode.children.get(rootNode.children.size() - 1));
+
+        while(rootNode.children.size() > 1){
+            TreeNode lastChild = rootNode.children.remove(rootNode.children.size() - 1);
+            TreeNode secondLastChild = rootNode.children.get(rootNode.children.size() - 1);
+            TreeNode tail = linearize2(secondLastChild);
+            tail.children.add(lastChild);
+        }
+
+        return lastChildLeaf;
+
+    }
+
+    public Boolean findNode(TreeNode rootNode, int Key){
+
+        if(rootNode.value == Key){
+            return true;
+        }
+
+        for(TreeNode child: rootNode.children){
+            Boolean isFound = findNode(child, Key);
+
+            if(isFound){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public ArrayList<Integer> nodeToRootPath(TreeNode rootNode, int Key){
+
+        if(rootNode.value == Key){
+            ArrayList<Integer> list = new ArrayList<Integer>();
+            list.add(Key);
+            return list;
+        }
+
+        for(TreeNode child: rootNode.children){
+            ArrayList<Integer> pathToRoot = nodeToRootPath(child, Key);
+
+            if(pathToRoot.size() > 0) {
+                pathToRoot.add(rootNode.value);
+                return pathToRoot;
+            }
+        }
+
+        return new ArrayList<Integer>();
+
+    }
+
+    public int lowestCommonAncestor(TreeNode rootNode, int node1, int node2){
+        ArrayList<Integer> list = nodeToRootPath(rootNode, node1);
+        ArrayList<Integer> list1 = nodeToRootPath(rootNode, node2);
+
+        int i = list.size() - 1;
+        int j = list1.size() - 1;
+        while(i >= 0 && j >=0 && Objects.equals(list.get(i), list1.get(j))){
+            --i;
+            --j;
+        }
+        return list.get(i + 1);
+    }
+
+    public int distanceBetweenNodeEdges(TreeNode rootNode, int node1, int node2){
+
+        ArrayList<Integer> list = nodeToRootPath(rootNode , node1);
+        ArrayList<Integer> list1 = nodeToRootPath(rootNode, node2);
+
+        int i = list.size() - 1;
+        int j = list1.size() - 1;
+        while(i >= 0 && j >=0 && Objects.equals(list.get(i), list1.get(j))){
+            --i;
+            --j;
+        }
+
+        return (i + j + 2);
+    }
+
      private static class TreeNode {
         private final int value;
         private final ArrayList<TreeNode> children = new ArrayList<>();
@@ -201,25 +308,44 @@ public class GenericTree {
         public TreeNode(int val) {
             this.value = val;
         }
+
+        public TreeNode(TreeNode node){
+            this.value = node.value;
+        }
     }
 
     public static void main(String[] args) {
         int[] arr = {10, 20, 50, -1, 60, -1, -1, 30, 70, -1, 80, 110, -1, 120, -1, -1, 90, -1, -1, 40, 100, -1, -1, -1};
 
         GenericTree tree = new GenericTree(arr);
-        tree.display(tree.root);
+//        tree.display(tree.root);
        
-        System.out.println(tree.size(tree.root));
-        System.out.println(tree.maxValueNode(tree.root));
-        System.out.println(tree.height(tree.root));
-        
-        tree.traversals(tree.root);
-        tree.levelOrder(tree.root);
-        tree.levelOrderLinewise(tree.root);
-        tree.levelOrderLinewiseZigzag(tree.root);
+//        System.out.println(tree.size(tree.root));
+//        System.out.println(tree.maxValueNode(tree.root));
+//        System.out.println(tree.height(tree.root));
+//
+//        tree.traversals(tree.root);
+//        tree.levelOrder(tree.root);
+//        tree.levelOrderLinewise(tree.root);
+//        tree.levelOrderLinewiseZigzag(tree.root);
+//
+//        tree.mirror(tree.root);
+//        tree.mirrorUsingSwap(tree.root);
+//        tree.removeLeaves(tree.root);
 
-        tree.mirror(tree.root);
-        tree.mirrorUsingSwap(tree.root);
-        tree.removeLeaves(tree.root);
+//        tree.linearize(tree.root);
+//        tree.linearize2(tree.root);
+
+////        System.out.println(tree.findNode(tree.root, 110));
+//        ArrayList<Integer> pathToRoot = tree.nodeToRootPath(tree.root, 100);
+//        System.out.println(pathToRoot);
+
+//        int lowestCommonAncestor = tree.lowestCommonAncestor(tree.root, 50, 90);
+//        System.out.println(lowestCommonAncestor);
+
+        int distanceBetweenTwoNodes = tree.distanceBetweenNodeEdges(tree.root, 50, 110);
+        System.out.println(distanceBetweenTwoNodes);
+
+
     }
 }
