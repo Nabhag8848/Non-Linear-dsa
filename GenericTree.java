@@ -301,7 +301,41 @@ public class GenericTree {
         return (i + j + 2);
     }
 
-     private static class TreeNode {
+    public Boolean areTreeSimilar(TreeNode rootNode, TreeNode rootNode1){
+
+        if(rootNode.children.size() != rootNode1.children.size()){
+            return false;
+        }
+
+        for(int child = 0;child < rootNode.children.size(); ++child){
+            Boolean areSimilar = areTreeSimilar(rootNode.children.get(child), rootNode1.children.get(child));
+
+            if(!areSimilar){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public Boolean areTreeMirror(TreeNode rootNode, TreeNode rootNode1){
+
+        if(rootNode.children.size() != rootNode1.children.size()){
+            return false;
+        }
+
+        for(int child = 0;child < (rootNode.children.size() + 1)/ 2; ++child){
+
+            Boolean isMatch = areTreeMirror(rootNode.children.get(child), rootNode1.children.get(rootNode.children.size() - child - 1));
+            if(!isMatch){
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    private static class TreeNode {
         private final int value;
         private final ArrayList<TreeNode> children = new ArrayList<>();
 
@@ -316,36 +350,40 @@ public class GenericTree {
 
     public static void main(String[] args) {
         int[] arr = {10, 20, 50, -1, 60, -1, -1, 30, 70, -1, 80, 110, -1, 120, -1, -1, 90, -1, -1, 40, 100, -1, -1, -1};
-
+        int[] arr1 = {10, 20, 50, -1, 60, -1, -1, 30, 70, -1, 80, 110, -1, 120, -1, -1, 90, -1, -1, 40, 100, -1, -1, -1};
+        
         GenericTree tree = new GenericTree(arr);
-//        tree.display(tree.root);
-       
-//        System.out.println(tree.size(tree.root));
-//        System.out.println(tree.maxValueNode(tree.root));
-//        System.out.println(tree.height(tree.root));
-//
-//        tree.traversals(tree.root);
-//        tree.levelOrder(tree.root);
-//        tree.levelOrderLinewise(tree.root);
-//        tree.levelOrderLinewiseZigzag(tree.root);
-//
-//        tree.mirror(tree.root);
-//        tree.mirrorUsingSwap(tree.root);
-//        tree.removeLeaves(tree.root);
+        GenericTree tree1 = new GenericTree(arr1);
 
-//        tree.linearize(tree.root);
-//        tree.linearize2(tree.root);
+       tree.display(tree.root);
 
-////        System.out.println(tree.findNode(tree.root, 110));
-//        ArrayList<Integer> pathToRoot = tree.nodeToRootPath(tree.root, 100);
-//        System.out.println(pathToRoot);
+       System.out.println(tree.size(tree.root));
+       System.out.println(tree.maxValueNode(tree.root));
+       System.out.println(tree.height(tree.root));
 
-//        int lowestCommonAncestor = tree.lowestCommonAncestor(tree.root, 50, 90);
-//        System.out.println(lowestCommonAncestor);
+       tree.traversals(tree.root);
+       tree.levelOrder(tree.root);
+       tree.levelOrderLinewise(tree.root);
+       tree.levelOrderLinewiseZigzag(tree.root);
 
-        int distanceBetweenTwoNodes = tree.distanceBetweenNodeEdges(tree.root, 50, 110);
-        System.out.println(distanceBetweenTwoNodes);
+       tree.mirror(tree.root);
+       tree.mirrorUsingSwap(tree.root);
+       tree.removeLeaves(tree.root);
 
+       tree.linearize(tree.root);
+       tree.linearize2(tree.root);
 
+       System.out.println(tree.findNode(tree.root, 110));
+
+       ArrayList<Integer> pathToRoot = tree.nodeToRootPath(tree.root, 100);
+       System.out.println(pathToRoot);
+
+       int lowestCommonAncestor = tree.lowestCommonAncestor(tree.root, 50, 90);
+       System.out.println(lowestCommonAncestor);
+
+       int distanceBetweenTwoNodes = tree.distanceBetweenNodeEdges(tree.root, 50, 110);
+       System.out.println(distanceBetweenTwoNodes);
+
+        System.out.println(tree.areTreeSimilar(tree.root,tree1.root));
     }
 }
