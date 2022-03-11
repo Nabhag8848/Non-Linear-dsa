@@ -3,6 +3,18 @@ import java.util.*;
 public class GenericTree {
 
     public TreeNode root = null;
+    private int size = 0;
+    private int minValueNode = Integer.MAX_VALUE;
+    private int maxValueNode = Integer.MIN_VALUE;
+    private int height = 0;
+
+    private TreeNode predecessor = null;
+    private TreeNode successor = null;
+    private int state = 0;
+
+    private int ceil = Integer.MAX_VALUE;
+    private int floor = Integer.MIN_VALUE;
+
 
     public GenericTree(int[] arr){
         Stack<TreeNode> st = new Stack<>();
@@ -22,7 +34,7 @@ public class GenericTree {
             }
         }
     }
-
+    //display Tree
     public void display(TreeNode node){
         StringBuilder parentChildren = new StringBuilder(node.value + " -> ");
 
@@ -255,7 +267,7 @@ public class GenericTree {
     public ArrayList<Integer> nodeToRootPath(TreeNode rootNode, int Key){
 
         if(rootNode.value == Key){
-            ArrayList<Integer> list = new ArrayList<Integer>();
+            ArrayList<Integer> list = new ArrayList<>();
             list.add(Key);
             return list;
         }
@@ -269,7 +281,7 @@ public class GenericTree {
             }
         }
 
-        return new ArrayList<Integer>();
+        return new ArrayList<>();
 
     }
 
@@ -335,25 +347,101 @@ public class GenericTree {
         return true;
     }
 
-    public Boolean areTreeSymmetric(TreeNode rootNode){
-        
-        return true;
+    public Boolean isTreeSymmetric(TreeNode rootNode){
+        //if tree is symmetric then they are mirror image of itself and it gets fold.
+        return areTreeMirror(rootNode, rootNode);
     }
 
     public void multiSolver(TreeNode rootNode, int depth){
 
+        size++;
+        maxValueNode = Math.max(maxValueNode, rootNode.value);
+        minValueNode = Math.min(minValueNode, rootNode.value);
+        height = Math.max(height, depth);
+
+        for(TreeNode child: rootNode.children){
+            multiSolver(child, depth + 1);
+        }
+    }
+    // display ->  Data members Changed with traversed
+    public void display(){
+
+        System.out.println("Size: " + size);
+        System.out.println("MaxValueNode: " + maxValueNode);
+        System.out.println("MinValueNode: " + minValueNode);
+        System.out.println("Height: " + height);
+
+        System.out.println("Predecessor: " + (predecessor != null ? predecessor.value: null));
+        System.out.println("Successor: " + (successor != null ? successor.value: null));
+
+        System.out.println("Ceil: " + ceil);
+        System.out.println("Floor: " + floor);
+    }
+
+    public int getSize(){
+        return size;
+    }
+
+    public int getMaxValueNode(){
+        return maxValueNode;
+    }
+
+    public int getMinValueNode(){
+        return minValueNode;
+    }
+
+    public int getHeight(){
+        return height;
     }
 
     public void predecessorAndSuccessor(TreeNode rootNode, int value){
 
+        if(state == 0){
+            if(rootNode.value == value){
+                state = 1;
+            }else{
+                predecessor = rootNode;
+            }
+        }else if (state == 1){
+            successor = rootNode;
+            state = 2;
+        }
+
+        for(TreeNode child: rootNode.children){
+            predecessorAndSuccessor(child, value);
+        }
     }
 
     public void ceilAndFloor(TreeNode rootNode, int value){
 
+        if(rootNode.value > value){
+            if(rootNode.value < ceil){
+                ceil = rootNode.value;
+            }
+        }
+
+        if(rootNode.value < value){
+            if(rootNode.value > floor){
+                floor = rootNode.value;
+            }
+        }
+
+
+        for(TreeNode child: rootNode.children){
+            ceilAndFloor(child, value);
+        }
     }
 
     public int kthLargest(TreeNode rootNode, int k){
-        return 0;
+        floor = Integer.MIN_VALUE;
+        int factor = Integer.MAX_VALUE;
+        for(int i = 0; i < k; ++i){
+            ceilAndFloor(rootNode, factor);
+            factor = floor;
+            floor = Integer.MIN_VALUE;
+        }
+
+        return factor;
     }
 
     private static class TreeNode {
@@ -373,10 +461,12 @@ public class GenericTree {
         int[] arr  = {10, 20, 50, -1, 60, -1, -1, 30, 70, -1, 80, 110, -1, 120, -1, -1, 90, -1, -1, 40, 100, -1, -1, -1};
         int[] arr1 = {10, 20, 50, -1, 60, -1, -1, 30, 70, -1, 80, 110, -1, 120, -1, -1, 90, -1, -1, 40, 100, -1, -1, -1};
         int[] arr2 = {10, 40, 100, -1, -1, 30, 90, -1, 80, 120, -1, 110, -1, -1, 70, -1, -1, 20, 60, -1,50, -1, -1, -1};
+        int[] arr3 = {10, 20, 50, -1, 60, -1, -1, 30, 70, -1, 80, -1, 90, -1, -1, 40, 100, -1, 110, -1, -1, -1};
         
         GenericTree tree = new GenericTree(arr);
         GenericTree tree1 = new GenericTree(arr1);
         GenericTree tree2 = new GenericTree(arr2);
+        GenericTree tree3 = new GenericTree(arr3);
 
         tree.display(tree.root);
 
@@ -410,5 +500,22 @@ public class GenericTree {
         System.out.println(tree.areTreeSimilar(tree.root,tree1.root));
         System.out.println(tree.areTreeMirror(tree.root, tree1.root));
         System.out.println(tree.areTreeMirror(tree.root, tree2.root));
+        System.out.println(tree.isTreeSymmetric(tree3.root));
+        tree.multiSolver(tree.root, 0);
+        tree.display();
+
+        System.out.println(tree.getSize());
+        System.out.println(tree.getMaxValueNode());
+        System.out.println(tree.getMinValueNode());
+        System.out.println(tree.getHeight());
+
+          tree.predecessorAndSuccessor(tree.root, 100);
+          tree.display();
+
+          tree.ceilAndFloor(tree.root, 65);
+          tree.display();
+
+        System.out.println(tree.kthLargest(tree.root, 12));
+
     }
 }
