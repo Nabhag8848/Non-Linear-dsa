@@ -15,6 +15,10 @@ public class GenericTree {
     private int ceil = Integer.MAX_VALUE;
     private int floor = Integer.MIN_VALUE;
 
+    private int maxSumOfSubTree = Integer.MIN_VALUE;
+    private int maxNodeOfSubTree;
+
+    private int Diameter;
 
     public GenericTree(int[] arr){
         Stack<TreeNode> st = new Stack<>();
@@ -444,6 +448,54 @@ public class GenericTree {
         return factor;
     }
 
+    public int NodewithMaxSubTree(TreeNode rootNode){
+
+        int sum = 0;
+        for(TreeNode child: rootNode.children){
+            sum += NodewithMaxSubTree(child);
+        }
+
+        sum += rootNode.value;
+
+        if(maxSumOfSubTree < sum){
+            maxSumOfSubTree = sum;
+            maxNodeOfSubTree = rootNode.value;
+        }
+
+        return sum;
+    }
+
+    public void displayMaxSubTreeNode(){
+        System.out.print(maxNodeOfSubTree + "@" + maxSumOfSubTree);
+    }
+
+    public int Diameter(TreeNode rootNode){
+
+        int deepestChild = -1;
+        int secondDeepestChild = -1;
+
+        for(TreeNode child: rootNode.children){
+             int childHeight = Diameter(child);
+             if(childHeight > deepestChild){
+                 secondDeepestChild = deepestChild;
+                 deepestChild = childHeight;
+             }else if(childHeight > secondDeepestChild){
+                 secondDeepestChild = childHeight;
+             }
+        }
+
+        int candidate = deepestChild + secondDeepestChild + 2;
+        if(candidate > Diameter){
+            Diameter = candidate;
+        }
+
+        deepestChild += 1;
+        return deepestChild;
+    }
+    public void displayDiameter() {
+        System.out.println("Diameter: " + Diameter);
+    }
+
     private static class TreeNode {
         private final int value;
         private final ArrayList<TreeNode> children = new ArrayList<>();
@@ -462,11 +514,13 @@ public class GenericTree {
         int[] arr1 = {10, 20, 50, -1, 60, -1, -1, 30, 70, -1, 80, 110, -1, 120, -1, -1, 90, -1, -1, 40, 100, -1, -1, -1};
         int[] arr2 = {10, 40, 100, -1, -1, 30, 90, -1, 80, 120, -1, 110, -1, -1, 70, -1, -1, 20, 60, -1,50, -1, -1, -1};
         int[] arr3 = {10, 20, 50, -1, 60, -1, -1, 30, 70, -1, 80, -1, 90, -1, -1, 40, 100, -1, 110, -1, -1, -1};
+        int[] arr4 = {10, 20, -50, -1, 60, -1, -1, 30, -70, -1, 80, -1, 90, -1, -1, 40, -100, -1, -1, -1};
         
         GenericTree tree = new GenericTree(arr);
         GenericTree tree1 = new GenericTree(arr1);
         GenericTree tree2 = new GenericTree(arr2);
         GenericTree tree3 = new GenericTree(arr3);
+        GenericTree tree4 = new GenericTree(arr4);
 
         tree.display(tree.root);
 
@@ -509,13 +563,18 @@ public class GenericTree {
         System.out.println(tree.getMinValueNode());
         System.out.println(tree.getHeight());
 
-          tree.predecessorAndSuccessor(tree.root, 100);
-          tree.display();
+        tree.predecessorAndSuccessor(tree.root, 100);
+        tree.display();
 
-          tree.ceilAndFloor(tree.root, 65);
-          tree.display();
+        tree.ceilAndFloor(tree.root, 65);
+        tree.display();
 
         System.out.println(tree.kthLargest(tree.root, 12));
 
+        tree4.NodewithMaxSubTree(tree4.root);
+        tree4.displayMaxSubTreeNode();
+
+        tree4.Diameter(tree4.root);
+        tree4.displayDiameter();
     }
 }
