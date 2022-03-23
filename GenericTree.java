@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class GenericTree {
+public class GenericTree implements Iterable<Integer>{
 
     public TreeNode root = null;
     private int size = 0;
@@ -134,7 +134,7 @@ public class GenericTree {
     }
 
     public void levelOrderLinewiseZigzag(TreeNode rootNode){
-        Boolean right = true;
+        boolean right = true;
 
         Stack<TreeNode> stack = new Stack<>();
         Stack<TreeNode> childStack = new Stack<>();
@@ -352,7 +352,7 @@ public class GenericTree {
     }
 
     public Boolean isTreeSymmetric(TreeNode rootNode){
-        //if tree is symmetric then they are mirror image of itself and it gets fold.
+        //if tree is symmetric then they are mirror image of itself,it gets fold.
         return areTreeMirror(rootNode, rootNode);
     }
 
@@ -448,11 +448,11 @@ public class GenericTree {
         return factor;
     }
 
-    public int NodewithMaxSubTree(TreeNode rootNode){
+    public int nodeWithMaxSubTree(TreeNode rootNode){
 
         int sum = 0;
         for(TreeNode child: rootNode.children){
-            sum += NodewithMaxSubTree(child);
+            sum += nodeWithMaxSubTree(child);
         }
 
         sum += rootNode.value;
@@ -501,8 +501,8 @@ public class GenericTree {
         Stack<Pair> stack = new Stack<>();
         stack.push(new Pair(rootNode, -1));
 
-        StringBuilder pre = new StringBuilder("");
-        StringBuilder post = new StringBuilder("");
+        StringBuilder pre = new StringBuilder();
+        StringBuilder post = new StringBuilder();
 
         while(stack.size() > 0){
             Pair top = stack.peek();
@@ -523,6 +523,54 @@ public class GenericTree {
         System.out.println("PostOrder: " + post);
     }
 
+    @Override
+    public Iterator<Integer> iterator() {
+        return new PreOrderIterator(root);
+    }
+
+    public static class PreOrderIterator implements Iterator<Integer>{
+
+        Integer nextVal;
+        Stack<Pair> stack;
+        PreOrderIterator(TreeNode root){
+            stack = new Stack<>();
+            stack.push(new Pair(root, -1));
+            next();
+        }
+
+
+        @Override
+        public boolean hasNext() {
+            return nextVal != null;
+        }
+
+        @Override
+        public Integer next() {
+
+            Integer currentValue = nextVal;
+            nextVal = null;
+
+            while(stack.size() > 0){
+
+                Pair top = stack.peek();
+
+                if(top.state == -1){
+                    nextVal = top.node.value;
+                    top.state++;
+                    break;
+                }else if(top.state == top.node.children.size()){
+                    stack.pop();
+                }else{
+                    Pair child = new Pair(top.node.children.get(top.state), -1);
+                    stack.push(child);
+                    top.state++;
+                }
+            }
+
+            return currentValue;
+        }
+    }
+
     private static class TreeNode {
         private final int value;
         private final ArrayList<TreeNode> children = new ArrayList<>();
@@ -531,9 +579,6 @@ public class GenericTree {
             this.value = val;
         }
 
-        public TreeNode(TreeNode node){
-            this.value = node.value;
-        }
     }
 
     private static class Pair{
@@ -608,12 +653,17 @@ public class GenericTree {
 
        System.out.println(tree.kthLargest(tree.root, 12));
 
-       tree4.NodewithMaxSubTree(tree4.root);
+       tree4.nodeWithMaxSubTree(tree4.root);
        tree4.displayMaxSubTreeNode();
 
        tree4.Diameter(tree4.root);
        tree4.displayDiameter();
 
         tree.IterativePrePostOrder(tree.root);
+
+        for (Integer val : tree) {
+            System.out.print(val + " ");
+        }
+
     }
 }
