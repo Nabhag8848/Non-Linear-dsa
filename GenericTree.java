@@ -496,6 +496,33 @@ public class GenericTree {
         System.out.println("Diameter: " + Diameter);
     }
 
+    public void IterativePrePostOrder(TreeNode rootNode){
+
+        Stack<Pair> stack = new Stack<>();
+        stack.push(new Pair(rootNode, -1));
+
+        StringBuilder pre = new StringBuilder("");
+        StringBuilder post = new StringBuilder("");
+
+        while(stack.size() > 0){
+            Pair top = stack.peek();
+            if(top.state == -1){
+                pre.append(top.node.value).append(" ");
+                top.state++;
+            }else if(top.state == top.node.children.size()){
+                post.append(top.node.value).append(" ");
+                stack.pop();
+            }else{
+                Pair child = new Pair(top.node.children.get(top.state), -1);
+                stack.push(child);
+                top.state++;
+            }
+        }
+
+        System.out.println("PreOrder: " + pre);
+        System.out.println("PostOrder: " + post);
+    }
+
     private static class TreeNode {
         private final int value;
         private final ArrayList<TreeNode> children = new ArrayList<>();
@@ -506,6 +533,16 @@ public class GenericTree {
 
         public TreeNode(TreeNode node){
             this.value = node.value;
+        }
+    }
+
+    private static class Pair{
+        private final TreeNode node;
+        private int state;
+
+        Pair(TreeNode node, int state){
+            this.node = node;
+            this.state = state;
         }
     }
 
@@ -522,59 +559,61 @@ public class GenericTree {
         GenericTree tree3 = new GenericTree(arr3);
         GenericTree tree4 = new GenericTree(arr4);
 
-        tree.display(tree.root);
+       tree.display(tree.root);
 
-        System.out.println(tree.size(tree.root));
-        System.out.println(tree.maxValueNode(tree.root));
-        System.out.println(tree.height(tree.root));
+       System.out.println(tree.size(tree.root));
+       System.out.println(tree.maxValueNode(tree.root));
+       System.out.println(tree.height(tree.root));
 
-        tree.traversals(tree.root);
-        tree.levelOrder(tree.root);
-        tree.levelOrderLinewise(tree.root);
-        tree.levelOrderLinewiseZigzag(tree.root);
+       tree.traversals(tree.root);
+       tree.levelOrder(tree.root);
+       tree.levelOrderLinewise(tree.root);
+       tree.levelOrderLinewiseZigzag(tree.root);
 
-        tree.mirror(tree.root);
-        tree.mirrorUsingSwap(tree.root);
-        tree.removeLeaves(tree.root);
+       tree.mirror(tree.root);
+       tree.mirrorUsingSwap(tree.root);
+       tree.removeLeaves(tree.root);
 
-        tree.linearize(tree.root);
-        tree.linearize2(tree.root);
+       tree.linearize(tree.root);
+       tree.linearize2(tree.root);
 
-        System.out.println(tree.findNode(tree.root, 110));
+       System.out.println(tree.findNode(tree.root, 110));
 
-        ArrayList<Integer> pathToRoot = tree.nodeToRootPath(tree.root, 100);
-        System.out.println(pathToRoot);
+       ArrayList<Integer> pathToRoot = tree.nodeToRootPath(tree.root, 100);
+       System.out.println(pathToRoot);
 
-        int lowestCommonAncestor = tree.lowestCommonAncestor(tree.root, 50, 90);
-        System.out.println(lowestCommonAncestor);
+       int lowestCommonAncestor = tree.lowestCommonAncestor(tree.root, 50, 90);
+       System.out.println(lowestCommonAncestor);
 
-        int distanceBetweenTwoNodes = tree.distanceBetweenNodeEdges(tree.root, 50, 110);
-        System.out.println(distanceBetweenTwoNodes);
+       int distanceBetweenTwoNodes = tree.distanceBetweenNodeEdges(tree.root, 50, 110);
+       System.out.println(distanceBetweenTwoNodes);
 
-        System.out.println(tree.areTreeSimilar(tree.root,tree1.root));
-        System.out.println(tree.areTreeMirror(tree.root, tree1.root));
-        System.out.println(tree.areTreeMirror(tree.root, tree2.root));
-        System.out.println(tree.isTreeSymmetric(tree3.root));
-        tree.multiSolver(tree.root, 0);
-        tree.display();
+       System.out.println(tree.areTreeSimilar(tree.root,tree1.root));
+       System.out.println(tree.areTreeMirror(tree.root, tree1.root));
+       System.out.println(tree.areTreeMirror(tree.root, tree2.root));
+       System.out.println(tree.isTreeSymmetric(tree3.root));
+       tree.multiSolver(tree.root, 0);
+       tree.display();
 
-        System.out.println(tree.getSize());
-        System.out.println(tree.getMaxValueNode());
-        System.out.println(tree.getMinValueNode());
-        System.out.println(tree.getHeight());
+       System.out.println(tree.getSize());
+       System.out.println(tree.getMaxValueNode());
+       System.out.println(tree.getMinValueNode());
+       System.out.println(tree.getHeight());
 
-        tree.predecessorAndSuccessor(tree.root, 100);
-        tree.display();
+       tree.predecessorAndSuccessor(tree.root, 100);
+       tree.display();
 
-        tree.ceilAndFloor(tree.root, 65);
-        tree.display();
+       tree.ceilAndFloor(tree.root, 65);
+       tree.display();
 
-        System.out.println(tree.kthLargest(tree.root, 12));
+       System.out.println(tree.kthLargest(tree.root, 12));
 
-        tree4.NodewithMaxSubTree(tree4.root);
-        tree4.displayMaxSubTreeNode();
+       tree4.NodewithMaxSubTree(tree4.root);
+       tree4.displayMaxSubTreeNode();
 
-        tree4.Diameter(tree4.root);
-        tree4.displayDiameter();
+       tree4.Diameter(tree4.root);
+       tree4.displayDiameter();
+
+        tree.IterativePrePostOrder(tree.root);
     }
 }
