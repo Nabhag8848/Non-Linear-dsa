@@ -1,3 +1,5 @@
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.Stack;
 
 public class BinaryTree {
@@ -116,6 +118,102 @@ public class BinaryTree {
         return Math.max(leftHeight, rightHeight) + 1;
     }
 
+    public void preOrder(TreeNode Node){
+
+        if(Node == null){
+            return;
+        }
+
+        System.out.print(Node.value + " ");
+        preOrder(Node.left);
+        preOrder(Node.right);
+    }
+
+    public void inOrder(TreeNode Node){
+        if(Node == null){
+            return;
+        }
+
+        inOrder(Node.left);
+        System.out.print(Node.value + " ");
+        inOrder(Node.right);
+    }
+
+      public void postOrder(TreeNode Node){
+        if(Node == null){
+            return;
+        }
+
+        postOrder(Node.left);
+        postOrder(Node.right);
+        System.out.print(Node.value + " ");
+
+    }
+
+    public void levelOrder(TreeNode Node){
+
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        queue.add(Node);
+
+        while(queue.size() > 0){
+            int count = queue.size();
+            for(int i = 0;i < count; ++i){
+
+                TreeNode node = queue.remove();
+                System.out.print(node.value + " ");
+
+                if(node.left != null){
+                    queue.add(node.left);
+                }
+
+                if(node.right != null){
+                    queue.add(node.right);
+                }
+
+            }
+
+            System.out.println();
+        }
+    }
+
+    public void IterativePrePostInOrder(TreeNode rootNode){
+
+        Stack<Pair> stack = new Stack<>();
+        Pair rootPair = new Pair(rootNode, 1);
+        stack.push(rootPair);
+
+        StringBuilder pre = new StringBuilder();
+        StringBuilder post = new StringBuilder();
+        StringBuilder in = new StringBuilder();
+
+        while(stack.size() > 0){
+
+            Pair top = stack.peek();
+            if(top.state == 1){
+                top.state++;
+                pre.append(top.node.value). append(" ");
+
+                if(top.node.left != null){
+                    stack.push(new Pair(top.node.left, 1));
+                }
+
+            }else if(top.state == 2){
+                top.state++;
+                in.append(top.node.value). append(" ");
+                if(top.node.right != null){
+                    stack.push(new Pair(top.node.right, 1));
+                }
+            }else {
+                post.append(top.node.value). append(" ");
+                stack.pop();
+            }
+        }
+
+        System.out.println("Pre: " + pre);
+        System.out.println("In: " + in);
+        System.out.println("Post: " + post);
+    }
+
     private static class Pair {
         private final TreeNode node;
         private int state;
@@ -128,7 +226,7 @@ public class BinaryTree {
 
     private static class TreeNode{
 
-        private int value;
+        private final int value;
         private TreeNode left;
         private TreeNode right;
 
@@ -149,6 +247,14 @@ public class BinaryTree {
         System.out.println(tree.max(tree.rootNode));
         System.out.println(tree.height(tree.rootNode));
 
+        tree.preOrder(tree.rootNode);
+        System.out.println();
+        tree.postOrder(tree.rootNode);
+        System.out.println();
+        tree.inOrder(tree.rootNode);
+        System.out.println();
+        tree.levelOrder(tree.rootNode);
+        tree.IterativePrePostInOrder(tree.rootNode);
 
     }
 }
