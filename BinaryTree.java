@@ -1,6 +1,4 @@
-import java.util.ArrayDeque;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.*;
 
 public class BinaryTree {
 
@@ -214,6 +212,125 @@ public class BinaryTree {
         System.out.println("Post: " + post);
     }
 
+    public boolean find(TreeNode Node, int target){
+
+        if(Node == null){
+            return false;
+        }
+
+        if(Node.value == target){
+            return true;
+        }
+
+        boolean IsTrue = find(Node.left, target);
+        if(IsTrue){
+            return true;
+        }
+
+        return find(Node.right, target);
+    }
+
+    public List<Integer> nodeToRootPath(TreeNode Node, int target){
+
+        if(Node == null){
+            return new ArrayList<>();
+        }
+
+        if(Node.value == target){
+            List<Integer> ans = new ArrayList<>();
+            ans.add(target);
+            return ans ;
+        }
+
+        List<Integer> list = new ArrayList<>();
+        list.addAll(nodeToRootPath(Node.left, target));
+
+        if(list.size() > 0){
+            list.add(Node.value);
+            return list;
+        }
+
+        list.addAll(nodeToRootPath(Node.right, target));
+        if(list.size() > 0){
+            list.add(Node.value);
+        }
+        return list;
+    }
+
+    public void printKLevelsDown(TreeNode Node, int k){
+
+        if(Node == null || k < 0){
+            return;
+        }
+
+        if(k == 0){
+            System.out.print(Node.value + " ");
+            return;
+        }
+
+        printKLevelsDown(Node.left, k - 1);
+        printKLevelsDown(Node.right, k - 1);
+    }
+
+    public List<Integer> distanceKNodesFar(TreeNode root, int target, int k) {
+
+        List<TreeNode> path = nodeToRootPathReference(root, target);
+        List<Integer> list = new ArrayList<>();
+
+        for(int i = 0;i < path.size(); ++i){
+            list.addAll(printKLevelsDown(path.get(i), k - i, i == 0 ? null : path.get(i - 1)));
+        }
+
+        return list;
+    }
+
+    private List<Integer> printKLevelsDown(TreeNode node, int k, TreeNode blocker){
+
+        if(node == null || k < 0 || node.equals(blocker)){
+            return new ArrayList<Integer>();
+        }
+
+        if(k == 0){
+            List<Integer> ans = new ArrayList<Integer>();
+            ans.add(node.value);
+            return ans;
+        }
+
+        List<Integer> list = new ArrayList<Integer>();
+
+        list.addAll(printKLevelsDown(node.left, k - 1, blocker));
+        list.addAll(printKLevelsDown(node.right, k - 1, blocker));
+
+        return list;
+    }
+
+    private List<TreeNode> nodeToRootPathReference(TreeNode Node, int target){
+
+        if(Node == null){
+            return new ArrayList<>();
+        }
+
+        if(Node.value == target){
+            List<TreeNode> ans = new ArrayList<>();
+            ans.add(Node);
+            return ans ;
+        }
+
+        List<TreeNode> list = new ArrayList<>();
+        list.addAll(nodeToRootPathReference(Node.left, target));
+
+        if(list.size() > 0){
+            list.add(Node);
+            return list;
+        }
+
+        list.addAll(nodeToRootPathReference(Node.right, target));
+        if(list.size() > 0){
+            list.add(Node);
+        }
+        return list;
+    }
+    
     private static class Pair {
         private final TreeNode node;
         private int state;
@@ -255,6 +372,12 @@ public class BinaryTree {
         System.out.println();
         tree.levelOrder(tree.rootNode);
         tree.IterativePrePostInOrder(tree.rootNode);
+       
+        System.out.println(tree.find(tree.rootNode, 50));
+        System.out.println(tree.nodeToRootPath(tree.rootNode, 30));
+
+        tree.printKLevelsDown(tree.rootNode, 3);
+        System.out.println(tree.distanceKNodesFar(tree.rootNode, 25, 1));
 
     }
 }
